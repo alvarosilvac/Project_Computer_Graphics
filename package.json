@@ -1,0 +1,19 @@
+{
+  "name": "project_graphics",
+  "version": "1.0.0",
+  "description": "Project Computer Graphics FIU Spring 2017",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alvarosilvac/Project_Computer_Graphics.git"
+  },
+  "author": "Alvaro",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alvarosilvac/Project_Computer_Graphics/issues"
+  },
+  "homepage": "https://github.com/alvarosilvac/Project_Computer_Graphics#readme"
+}
