@@ -28,21 +28,107 @@
 </head>
 
 <body>
-<!--     <script src="public/js/three.min.js"></script> -->
-    <!-- <script src="public/js/OBJLoader.js"></script> -->
-<!--     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r79/three.min.js"></script> -->
-
-
-
-
-
-    <script src="http://threejs.org/build/three.js"></script>
+<script src="http://threejs.org/build/three.js"></script>
     <script src="http://threejs.org/examples/js/loaders/OBJLoader.js"></script>
 
     <script src="http://threejs.org/examples/js/Detector.js"></script>
     <script src="http://threejs.org/examples/js/libs/stats.min.js"></script>
-    <script src="public/js/OrbitControls.js"></script>
+    <script src="http://threejs.org/examples/js/controls/OrbitControls.js"></script>
 
+              <script>
+                $(document).ready(function(){
+
+                    //WHERE THE WEBGL IS INITIALIZED
+                    // Set up the scene, camera, and renderer as global variables.
+                    var scene, camera, renderer;
+
+                    init();
+                    animate();
+
+                    // Sets up the scene.
+                    function init() {
+
+                      // Create the scene and set the scene size.
+                      scene = new THREE.Scene();
+                      var WIDTH = 500;
+                          HEIGHT = 500;
+
+                      // Create a renderer and add it to the DOM.
+                      //renderer = new THREE.WebGLRenderer({antialias:true});
+                      renderer = new THREE.WebGLRenderer();
+                      renderer.setSize(WIDTH, HEIGHT);
+                      document.getElementById('display-render').appendChild(renderer.domElement);
+
+                      // Create a camera, zoom it out from the model a bit, and add it to the scene.
+                      camera = new THREE.PerspectiveCamera(400, WIDTH / HEIGHT, 0.1, 20000);
+                      camera.position.set(6,6,14);
+                      scene.add(camera);
+
+                      // Create an event listener that resizes the renderer with the browser window.
+                      window.addEventListener('resize', function() {
+                        var WIDTH = window.innerWidth,
+                            HEIGHT = window.innerHeight;
+                        renderer.setSize(WIDTH, HEIGHT);
+                        camera.aspect = WIDTH / HEIGHT;
+                        camera.updateProjectionMatrix();
+                      });
+
+                      var ambient = new THREE.AmbientLight( 0x101030 );
+                      scene.add( ambient );
+                      // Create a light, set its position, and add it to the scene.
+                      var light = new THREE.PointLight(0xffffff);
+                      light.position.set(100,200,100);
+                      scene.add(light);
+
+                      var manager = new THREE.LoadingManager();
+                      manager.onProgress = function ( item, loaded, total ) {
+                        // console.log( item, loaded, total );
+                      };
+
+                      var loader = new THREE.OBJLoader( manager );
+                      loader.load('/img/104_final.obj', function ( object ) {
+
+                        object.traverse( function ( child ) {
+                          if (child instanceof THREE.Mesh ) {
+                             //child.material.map = texture;
+                          }
+                        });
+                        scene.add(object);
+                      // Add OrbitControls so that we can pan around with the mouse.
+                      
+                    });
+                      controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+                    }
+
+                    function render(){
+                      renderer.render(scene,camera);
+                    }
+
+                    // Renders the scene and updates the render as needed.
+                    function animate() {
+
+                      requestAnimationFrame(animate);
+                      
+                      // Render the scene.
+                      render();
+                      controls.update();
+
+                    }
+
+                    //JQUERY FOR BUTTON SCAN
+                    $("#scan").click(function(){
+                      alert("working button!");
+                      $.ajax({
+
+                      });
+                    });
+                });
+                
+
+              
+
+            </script>
     <!-- Image Background Page Header -->
     <!-- Note: The background image is set within the business-casual.css file. -->
     <header class="business-header">
@@ -91,207 +177,13 @@
         <!-- /.row -->
 
         <hr>
-        <div id="display-render">
+        <div class="row">
+          <div id="display-render" class="col-md-6">
+          </div>
+          <div class ="col-md-6">
+            <button id="scan"> SCAN </button>
+          </div>
         </div>
-        <div class="col-sm-4 col-sm-offset-4">
-            <script>
-                // $.ajax({
-                //   url: "converter/convert_obj_three.py",
-                //   success: function(response){
-
-                //   }
-                // });
-
-                $(document).ready(function(){
-                    // Set up the scene, camera, and renderer as global variables.
-                    var scene, camera, renderer;
-
-                    init();
-                    animate();
-
-                    // Sets up the scene.
-                    function init() {
-
-                      // Create the scene and set the scene size.
-                      scene = new THREE.Scene();
-                      var WIDTH = 500;
-                          HEIGHT = 500;
-
-                      // Create a renderer and add it to the DOM.
-                      //renderer = new THREE.WebGLRenderer({antialias:true});
-                      renderer = new THREE.WebGLRenderer();
-                      renderer.setSize(WIDTH, HEIGHT);
-                      document.getElementById('display-render').appendChild(renderer.domElement);
-
-                      // Create a camera, zoom it out from the model a bit, and add it to the scene.
-                      camera = new THREE.PerspectiveCamera(400, WIDTH / HEIGHT, 0.1, 20000);
-                      camera.position.set(6,6,14);
-                      scene.add(camera);
-
-                      // Create an event listener that resizes the renderer with the browser window.
-                      window.addEventListener('resize', function() {
-                        var WIDTH = window.innerWidth,
-                            HEIGHT = window.innerHeight;
-                        renderer.setSize(WIDTH, HEIGHT);
-                        camera.aspect = WIDTH / HEIGHT;
-                        camera.updateProjectionMatrix();
-                      });
-
-                      var ambient = new THREE.AmbientLight( 0x101030 );
-                      scene.add( ambient );
-                      // Create a light, set its position, and add it to the scene.
-                      var light = new THREE.PointLight(0xffffff);
-                      light.position.set(100,200,100);
-                      scene.add(light);
-
-                      var manager = new THREE.LoadingManager();
-                      manager.onProgress = function ( item, loaded, total ) {
-                        // console.log( item, loaded, total );
-                      };
-
-                      var loader = new THREE.OBJLoader( manager );
-                      loader.load( 'public/models/104_final.obj', function ( object ) {
-
-                        object.traverse( function ( child ) {
-                          if (child instanceof THREE.Mesh ) {
-                             //child.material.map = texture;
-                          }
-                        });
-                        scene.add(object);
-                      // Add OrbitControls so that we can pan around with the mouse.
-                      
-                    });
-                      controls = new THREE.OrbitControls(camera, renderer.domElement);
-
-                    }
-
-                    function render(){
-                      renderer.render(scene,camera);
-                    }
-
-                    // Renders the scene and updates the render as needed.
-                    function animate() {
-
-                      requestAnimationFrame(animate);
-                      
-                      // Render the scene.
-                      render();
-                      controls.update();
-
-                    }
-
-                    //--------------
-      //                     var camera, scene, renderer;
-
-      // var mouseX = 0, mouseY = 0;
-
-      // var windowHalfX = window.innerWidth / 2;
-      // var windowHalfY = window.innerHeight / 2;
-
-
-      // init();
-      // animate();
-
-
-      // function init() {
-
-      //   container = document.createElement( 'div' );
-      //   document.body.appendChild( container );
-
-      //   camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
-      //   camera.position.z = 600;
-
-      //   // scene
-
-      //   scene = new THREE.Scene();
-
-      //   var ambient = new THREE.AmbientLight( 0x101030 );
-      //   scene.add( ambient );
-
-      //   var directionalLight = new THREE.DirectionalLight( 0xffeedd );
-      //   directionalLight.position.set( 0, 0, 1 );
-      //   scene.add( directionalLight );
-
-      //   // texture
-
-      //   var manager = new THREE.LoadingManager();
-      //   manager.onProgress = function ( item, loaded, total ) {
-
-      //     console.log( item, loaded, total );
-
-      //   };
-
-      //   // model
-      //   var loader = new THREE.OBJLoader( manager );
-      //   loader.load( 'public/models/cube.obj', function ( object ) {
-
-      //     object.traverse( function ( child ) {
-
-      //       if ( child instanceof THREE.Mesh ) {
-
-      //         //child.material.map = texture;
-
-      //       }
-
-      //     } );
-
-      //     object.position.x = - 60;
-      //               // object.rotation.x = 20* Math.PI / 180;
-      //               // object.rotation.z = 20* Math.PI / 180;
-      //               object.scale.x = 60;
-      //               object.scale.y = 60;
-      //               object.scale.z = 60;
-      //               obj = object
-      //     scene.add( obj );
-
-      //   } );
-
-      //   renderer = new THREE.WebGLRenderer();
-      //   renderer.setSize( window.innerWidth, window.innerHeight );
-      //   container.appendChild( renderer.domElement );
-
-      //   // document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-
-      //   // window.addEventListener( 'resize', onWindowResize, false );
-      //   controls = new THREE.OrbitControls(camera, renderer.domElement);
-      // }
-
-      // function onWindowResize() {
-      //   windowHalfX = window.innerWidth / 2;
-      //   windowHalfY = window.innerHeight / 2;
-
-      //   camera.aspect = window.innerWidth / window.innerHeight;
-      //   camera.updateProjectionMatrix();
-
-      //   renderer.setSize( 500, 500);
-      // }
-
-      // function onDocumentMouseMove( event ) {
-      //   mouseX = ( event.clientX - windowHalfX ) / 2;
-      //   mouseY = ( event.clientY - windowHalfY ) / 2;
-      // }
-
-      // function animate() {
-      //   requestAnimationFrame( animate );
-      //   render();
-      //   controls.update();
-      // }
-
-      // function render() {
-      //           // obj.rotation.x += (0.2*(Math.PI / 180));
-      //           // obj.rotation.x %=360;
-
-      //   camera.position.x += ( mouseX - camera.position.x ) * .05;
-      //   camera.position.y += ( - mouseY - camera.position.y ) * .05;
-
-      //   camera.lookAt( scene.position );
-
-      //   renderer.render( scene, camera );
-      // }
-                });
-            </script>
-        </div>
-
         <hr>
 
         <!-- Footer -->
@@ -309,9 +201,8 @@
 
     <!-- jQuery -->
     <script src=".js/jquery.js"></script>
-
     <!-- Bootstrap Core JavaScript -->
-    <script src="public/js/bootstrap.min.js"></script>
+    <script src="../public/js/bootstrap.min.js"></script>
 
 
 
